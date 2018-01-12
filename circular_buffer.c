@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "circular_buffer.h"
 
 
@@ -10,7 +11,7 @@
  * RETURNS:
  *
  ****************************************************************************/
-int circBufPush(struct circBuf_t *cb, struct DataCircularBuffer data)
+int circBufPushORIG(struct circBuf_t *cb, struct DataCircularBuffer data)
 {
       int next = cb->head + 1;
       if (next >= cb->maxLen)
@@ -24,6 +25,24 @@ int circBufPush(struct circBuf_t *cb, struct DataCircularBuffer data)
       cb->head = next;
       return 0;
 }
+
+int circBufPush(struct circBuf_t *cb, struct DataCircularBuffer data)
+{
+      // Cicular buffer is full
+      if (cb->head == cb->tail && cb->count == cb->maxLen)
+            return -1;  // quit with an error
+
+      int next = cb->head + 1;
+      if (next >= cb->maxLen)
+            next = 0;
+
+      cb->buffer[cb->head] = data;
+      cb->head = next;
+      cb->count ++;
+
+      return 0;
+}
+
 /****************************************************************************
  *
  * NAME: circBufPop
@@ -36,8 +55,11 @@ int circBufPush(struct circBuf_t *cb, struct DataCircularBuffer data)
 int circBufPop(struct circBuf_t *cb, struct DataCircularBuffer *data)
 {
       // if the head isn't ahead of the tail, we don't have any characters
-      if (cb->head == cb->tail)
+      if (cb->head == cb->tail && cb->count == 0){
+
             return -1;  // quit with an error
+      }
+            
 
       *data = cb->buffer[cb->tail];
       //cb->buffer[cb->tail] = 0;  // clear the data (optional)
@@ -47,7 +69,24 @@ int circBufPop(struct circBuf_t *cb, struct DataCircularBuffer *data)
             next = 0;
 
       cb->tail = next;
+      cb->count--;
 
       return 0;
 }
+
+/****************************************************************************
+ *
+ * NAME: numElementsInBuffer
+ *
+ * DESCRIPTION: ritorna il numero di elementi nel circular buffer
+ * 
+ * RETURNS: num elementi
+ *
+ ****************************************************************************/
+
+int numElementsInBuffer(struct circBuf_t *cb) 
+{
+      return cb->count;
+}
+
 

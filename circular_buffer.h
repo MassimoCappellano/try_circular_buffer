@@ -10,10 +10,13 @@ struct circBuf_t
       int head;
       int tail;
       int maxLen;
+      int count;
 };
 
 int circBufPush(struct circBuf_t *cb, struct DataCircularBuffer data);
 
 int circBufPop(struct circBuf_t *cb, struct DataCircularBuffer *data);
+
+int numElementsInBuffer(struct circBuf_t *cb);
 
 #endif
