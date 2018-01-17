@@ -3,20 +3,29 @@
 
 #include "data_circular_buffer.h"
 
+#define CIRCBUFFER_DEF(x, y)  \
+      DataCircularBuffer x##_dataSpace[y];     \
+      circBuf_t x = {               \
+            .buffer = x##_dataSpace,      \
+            .head = 0,                \
+            .tail = 0,                \
+            .maxLen = y,               \
+            .count = 0                \
+      }
 
-struct circBuf_t
+typedef struct 
 {
-      struct DataCircularBuffer *buffer;
+      DataCircularBuffer * const buffer;
       int head;
       int tail;
       int maxLen;
       int count;
-};
+} circBuf_t;
 
-int circBufPush(struct circBuf_t *cb, struct DataCircularBuffer data);
+int circBufPush(circBuf_t *cb, DataCircularBuffer data);
 
-int circBufPop(struct circBuf_t *cb, struct DataCircularBuffer *data);
+int circBufPop(circBuf_t *cb, DataCircularBuffer *data);
 
-int numElementsInBuffer(struct circBuf_t *cb);
+int numElementsInBuffer(circBuf_t *cb);
 
 #endif

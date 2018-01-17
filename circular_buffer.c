@@ -11,7 +11,7 @@
  * RETURNS:
  *
  ****************************************************************************/
-int circBufPushORIG(struct circBuf_t *cb, struct DataCircularBuffer data)
+int circBufPushORIG(circBuf_t *cb, DataCircularBuffer data)
 {
       int next = cb->head + 1;
       if (next >= cb->maxLen)
@@ -26,7 +26,7 @@ int circBufPushORIG(struct circBuf_t *cb, struct DataCircularBuffer data)
       return 0;
 }
 
-int circBufPush(struct circBuf_t *cb, struct DataCircularBuffer data)
+int circBufPush(circBuf_t *cb, DataCircularBuffer data)
 {
       // Cicular buffer is full
       if (cb->head == cb->tail && cb->count == cb->maxLen)
@@ -52,7 +52,7 @@ int circBufPush(struct circBuf_t *cb, struct DataCircularBuffer data)
  * RETURNS:
  *
  ****************************************************************************/
-int circBufPop(struct circBuf_t *cb, struct DataCircularBuffer *data)
+int circBufPop(circBuf_t *cb, DataCircularBuffer *data)
 {
       // if the head isn't ahead of the tail, we don't have any characters
       if (cb->head == cb->tail && cb->count == 0){
@@ -84,7 +84,7 @@ int circBufPop(struct circBuf_t *cb, struct DataCircularBuffer *data)
  *
  ****************************************************************************/
 
-int numElementsInBuffer(struct circBuf_t *cb) 
+int numElementsInBuffer(circBuf_t *cb) 
 {
       return cb->count;
 }
