@@ -11,35 +11,18 @@
  * RETURNS:
  *
  ****************************************************************************/
-int circBufPushORIG(circBuf_t *cb, DataCircularBuffer data)
+int circBufPush(circBuf_t *cb, DataCircularBuffer data)
 {
       int next = cb->head + 1;
-      if (next >= cb->maxLen)
+      if (next >= cb->maxLen) {
             next = 0;
-
+      }
       // Cicular buffer is full
       if (next == cb->tail)
             return -1;  // quit with an error
 
       cb->buffer[cb->head] = data;
       cb->head = next;
-      return 0;
-}
-
-int circBufPush(circBuf_t *cb, DataCircularBuffer data)
-{
-      // Cicular buffer is full
-      if (cb->head == cb->tail && cb->count == cb->maxLen)
-            return -1;  // quit with an error
-
-      int next = cb->head + 1;
-      if (next >= cb->maxLen)
-            next = 0;
-
-      cb->buffer[cb->head] = data;
-      cb->head = next;
-      cb->count ++;
-
       return 0;
 }
 
@@ -54,24 +37,18 @@ int circBufPush(circBuf_t *cb, DataCircularBuffer data)
  ****************************************************************************/
 int circBufPop(circBuf_t *cb, DataCircularBuffer *data)
 {
-      // if the head isn't ahead of the tail, we don't have any characters
-      if (cb->head == cb->tail && cb->count == 0){
+    // if the head isn't ahead of the tail, we don't have any characters
+    if (cb->head == cb->tail) // check if circular buffer is empty
+        return -1;          // and return with an error
 
-            return -1;  // quit with an error
-      }
-            
-
-      *data = cb->buffer[cb->tail];
-      //cb->buffer[cb->tail] = 0;  // clear the data (optional)
-
-      int next = cb->tail + 1;
-      if (next >= cb->maxLen)
-            next = 0;
-
-      cb->tail = next;
-      cb->count--;
-
-      return 0;
+    // next is where tail will point to after this read.
+    int next = cb->tail + 1;
+    if(next >= cb->maxLen) {
+        next = 0;
+    }
+    *data = cb->buffer[cb->tail]; // Read data and then move
+    cb->tail = next;             // tail to next data offset.
+    return 0;  // return success to indicate successful push.
 }
 
 /****************************************************************************
@@ -86,7 +63,14 @@ int circBufPop(circBuf_t *cb, DataCircularBuffer *data)
 
 int numElementsInBuffer(circBuf_t *cb) 
 {
-      return cb->count;
+      if(cb->head > cb-> tail) {
+            return cb->head - cb-> tail;
+      } else if (cb-> tail > cb->head) {
+            return cb-> maxLen - cb-> tail + cb->head;
+      } else {
+            // equals head and tail
+            return 0; // empty
+      }
 }
 
 

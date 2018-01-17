@@ -4,11 +4,9 @@
 #include "data_circular_buffer.h"
 #include "circular_buffer.h"
 
-#define BUFFER_SPACE 5
-
 void test1() 
 {    
-    CIRCBUFFER_DEF(circularBuffer, BUFFER_SPACE);
+    CIRCBUFFER_DEF(circularBuffer, 5);
 
     DataCircularBuffer d1 = { "MAC1", 1 };
    
@@ -41,7 +39,7 @@ void test2()
 {
     int ret;
 
-    CIRCBUFFER_DEF(circularBuffer, BUFFER_SPACE);
+    CIRCBUFFER_DEF(circularBuffer, 5);
 
     DataCircularBuffer d1 = { "MAC1", 1 };
 
@@ -86,6 +84,8 @@ void test2()
     ret = circBufPush(&circularBuffer, d6);
     assert(ret == 0);
 
+    assert(numElementsInBuffer(&circularBuffer) == 4);
+
     ret = circBufPush(&circularBuffer, d7);
     assert(ret == 0);
 
@@ -94,6 +94,8 @@ void test2()
     DataCircularBuffer d8 = { "MAC8", 8 };
     ret = circBufPush(&circularBuffer, d8);
     assert(ret == -1);
+
+    assert(numElementsInBuffer(&circularBuffer) == 5);
 }
 
 
